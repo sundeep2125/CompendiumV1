@@ -1,0 +1,3250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>QA Compendium – HP Instant Ink AMS Voice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="QA Scoring guide for MET / NOT MET / BLENDED (II & PRINT)">
+  <meta name="theme-color" content="#002a3a">
+  
+  <!-- Google Fonts with fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==================== CSS CUSTOM PROPERTIES ==================== */
+    :root {
+      --hp-navy: #002a3a;
+      --hp-navy-dark: #001a24;
+      --hp-blue: #0096d6;
+      --hp-cyan: #00b5e2;
+      --hp-magenta: #d6006e;
+      --hp-yellow: #ffd100;
+      
+      --bg: #f0f5fa;
+      --bg-panel: rgba(255, 255, 255, 0.85);
+      --border: rgba(201, 212, 223, 0.6);
+      --accent: var(--hp-blue);
+      --accent-soft: rgba(0, 150, 214, 0.1);
+      --text-main: #0b1f33;
+      --text-muted: #6b7280;
+      --danger: #dc2626;
+      
+      --gradient-primary: linear-gradient(135deg, #0096d6 0%, #00b5e2 50%, #00d4aa 100%);
+      --gradient-header: linear-gradient(135deg, #001a24 0%, #002a3a 30%, #0096d6 100%);
+      --gradient-met: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      --gradient-notmet: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      --gradient-blended: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+      --gradient-iichat: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --gradient-emea: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+      --gradient-psg: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+      --gradient-rsg: linear-gradient(135deg, #db2777 0%, #f472b6 100%);
+      
+      --shadow-sm: 0 2px 8px rgba(0, 42, 58, 0.08);
+      --shadow-md: 0 8px 24px rgba(0, 42, 58, 0.12);
+      --shadow-lg: 0 16px 48px rgba(0, 42, 58, 0.16);
+      
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+      --transition-slow: 0.4s ease;
+      
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 50px;
+    }
+
+    body.dark-mode {
+      --bg: #0d1117;
+      --bg-panel: rgba(22, 27, 34, 0.95);
+      --border: rgba(48, 54, 61, 0.8);
+      --text-main: #e6edf3;
+      --text-muted: #9ca3af;
+      --accent-soft: rgba(0, 150, 214, 0.2);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-main);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(0, 150, 214, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0, 181, 226, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--hp-cyan);
+      outline-offset: 2px;
+    }
+
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--hp-blue);
+      color: white;
+      padding: var(--spacing-sm) var(--spacing-md);
+      z-index: 100000;
+      transition: top var(--transition-fast);
+      text-decoration: none;
+      border-radius: 0 0 var(--radius-sm) 0;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .floating-shapes, .particles, .confetti {
+        display: none !important;
+      }
+    }
+
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.4;
+      filter: blur(60px);
+      animation: float 20s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .shape-1 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, rgba(0, 150, 214, 0.15), rgba(0, 181, 226, 0.1));
+      top: -100px;
+      right: -100px;
+    }
+
+    .shape-2 {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, rgba(214, 0, 110, 0.1), rgba(255, 209, 0, 0.08));
+      bottom: -50px;
+      left: -50px;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-10px, 20px) rotate(-3deg); }
+    }
+
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      z-index: 9999;
+      width: 0%;
+      box-shadow: 0 0 10px rgba(0, 150, 214, 0.5);
+      will-change: width;
+    }
+
+    header {
+      background: var(--gradient-header);
+      color: #f9fafb;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-md) var(--spacing-xl);
+      position: relative;
+      z-index: 1;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    /* SVG Logo Styles */
+    .hp-logo-svg {
+      height: 48px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+      transition: transform var(--transition-normal);
+    }
+
+    .hp-logo-svg:hover {
+      transform: scale(1.05);
+    }
+
+    .logo-fallback {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--hp-cyan);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 2px solid var(--hp-cyan);
+      border-radius: var(--radius-md);
+    }
+
+    .header-text h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ffffff, #e0f4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-text span {
+      font-size: 0.8rem;
+      color: rgba(207, 215, 227, 0.9);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-xs);
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    main {
+      display: flex;
+      min-height: calc(100vh - 90px);
+      max-width: 1400px;
+      margin: var(--spacing-lg) auto;
+      padding: 0 var(--spacing-lg);
+      gap: var(--spacing-lg);
+    }
+
+    .sidebar {
+      width: 360px;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      animation: slideInLeft 0.6s ease-out;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .sidebar-inner {
+      padding: 1.25rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      border-radius: var(--radius-xl);
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .sidebar-inner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
+    .search-box { position: relative; }
+    .search-wrapper { position: relative; }
+
+    .search-icon {
+      position: absolute;
+      left: var(--spacing-md);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      opacity: 0.5;
+      pointer-events: none;
+      transition: opacity var(--transition-fast);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.875rem var(--spacing-md) 0.875rem 2.75rem;
+      border-radius: var(--radius-lg);
+      border: 2px solid transparent;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-normal);
+      color: var(--text-main);
+    }
+
+    .search-box input::placeholder { color: var(--text-muted); }
+
+    .search-box input:focus {
+      background: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft), var(--shadow-md);
+    }
+
+    body.dark-mode .search-box input {
+      background: rgba(22, 27, 34, 0.9);
+      color: #e6edf3;
+    }
+
+    body.dark-mode .search-box input:focus {
+      background: rgba(22, 27, 34, 1);
+    }
+
+    .search-hint {
+      display: block;
+      margin-top: var(--spacing-sm);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      padding-left: var(--spacing-sm);
+    }
+
+    .search-stats {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      margin-top: var(--spacing-sm);
+    }
+
+    .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .category-button {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      font-family: inherit;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+
+    .category-button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .category-button.active {
+      background: var(--gradient-primary);
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: var(--shadow-md);
+    }
+
+    body.dark-mode .category-button {
+      background: rgba(22, 27, 34, 0.8);
+      color: #8b949e;
+    }
+
+    body.dark-mode .category-button.active {
+      background: var(--gradient-primary);
+      color: #ffffff;
+    }
+
+    .parameter-list {
+      list-style: none;
+      overflow-y: auto;
+      flex: 1;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .parameter-list::-webkit-scrollbar { width: 6px; }
+    .parameter-list::-webkit-scrollbar-track { background: transparent; }
+    .parameter-list::-webkit-scrollbar-thumb {
+      background: var(--gradient-primary);
+      border-radius: 10px;
+    }
+
+    body.dark-mode .parameter-list {
+      background: rgba(22, 27, 34, 0.7);
+    }
+
+    .parameter-item {
+      padding: 0.85rem var(--spacing-md);
+      border-bottom: 1px solid rgba(237, 240, 244, 0.8);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      position: relative;
+    }
+
+    .parameter-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      background: var(--gradient-primary);
+      transition: width var(--transition-normal);
+    }
+
+    .parameter-item:last-child { border-bottom: none; }
+
+    .parameter-item:hover {
+      background: rgba(0, 150, 214, 0.05);
+      padding-left: var(--spacing-lg);
+    }
+
+    .parameter-item:hover::before { width: 4px; }
+
+    .parameter-item.active {
+      background: linear-gradient(90deg, rgba(0, 150, 214, 0.12), rgba(0, 181, 226, 0.05));
+      padding-left: var(--spacing-lg);
+    }
+
+    .parameter-item.active::before { width: 4px; }
+
+    .parameter-item.bookmarked .parameter-name::after {
+      content: ' ⭐';
+      font-size: 0.7rem;
+    }
+
+    .parameter-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .parameter-category {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .parameter-category::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      padding: var(--spacing-xl) var(--spacing-md);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--spacing-sm);
+      display: block;
+    }
+
+    .empty-state-text { margin-bottom: var(--spacing-sm); }
+    .empty-state-hint { font-size: 0.75rem; opacity: 0.8; }
+
+    .detail {
+      flex: 1;
+      padding: var(--spacing-lg);
+      overflow-y: auto;
+      border-radius: var(--radius-xl);
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      position: relative;
+      animation: slideInRight 0.6s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .detail::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
+    .detail-header {
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-header h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--hp-navy), var(--hp-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body.dark-mode .detail-header h2 {
+      background: linear-gradient(135deg, #e6edf3, var(--hp-cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .detail-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, rgba(0, 42, 58, 0.08), rgba(0, 150, 214, 0.08));
+      color: var(--hp-navy);
+      border: 1px solid rgba(0, 150, 214, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    body.dark-mode .detail-header .badge {
+      background: rgba(0, 150, 214, 0.2);
+      color: var(--hp-cyan);
+    }
+
+    .detail-header .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+      line-height: 1.5;
+      padding: 0.75rem;
+      background: rgba(0, 150, 214, 0.04);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* ==================== TABS STYLES ==================== */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      background: rgba(0, 42, 58, 0.04);
+      border-radius: var(--radius-lg);
+      padding: 0.35rem;
+      margin-bottom: 1.25rem;
+      gap: 0.25rem;
+    }
+
+    .tab-button {
+      flex: 1 1 auto;
+      min-width: 70px;
+      border: 0;
+      border-radius: var(--radius-md);
+      background: transparent;
+      padding: 0.6rem 0.4rem;
+      font-size: 0.68rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all var(--transition-normal);
+    }
+
+    .tab-button:hover {
+      color: var(--text-main);
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .tab-button.active { color: #ffffff; }
+
+    .tab-button.met.active {
+      background: var(--gradient-met);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .tab-button.notmet.active {
+      background: var(--gradient-notmet);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .tab-button.blended.active {
+      background: var(--gradient-blended);
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .tab-button.iichat.active {
+      background: var(--gradient-iichat);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .tab-button.emea.active {
+      background: var(--gradient-emea);
+      box-shadow: 0 4px 15px rgba(8, 145, 178, 0.4);
+    }
+
+    .tab-button.psg.active {
+      background: var(--gradient-psg);
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+    }
+
+    .tab-button.rsg.active {
+      background: var(--gradient-rsg);
+      box-shadow: 0 4px 15px rgba(219, 39, 119, 0.4);
+    }
+
+    .tab-content {
+      display: none;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      animation: fadeIn var(--transition-slow);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-content.active { display: block; }
+    .tab-content p { margin-bottom: var(--spacing-md); }
+    .tab-content ul, .tab-content ol {
+      padding-left: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+    }
+    .tab-content li { margin-bottom: 0.6rem; }
+    .tab-content strong { color: var(--hp-navy); font-weight: 600; }
+    body.dark-mode .tab-content strong { color: var(--hp-cyan); }
+
+    .muted {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: var(--spacing-md);
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+
+    .recently-viewed {
+      padding: 0.75rem;
+      background: rgba(0, 150, 214, 0.05);
+      border-radius: var(--radius-md);
+      margin-top: 0.75rem;
+    }
+
+    .recently-viewed h4 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+    }
+
+    .recently-viewed-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .recently-viewed-item {
+      font-size: 0.7rem;
+      padding: 0.25rem var(--spacing-sm);
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 1px solid transparent;
+    }
+
+    .recently-viewed-item:hover {
+      border-color: var(--accent);
+      background: white;
+    }
+
+    body.dark-mode .recently-viewed-item {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-mode .recently-viewed-item:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      transition: all var(--transition-normal);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(15deg);
+    }
+
+    .quick-actions {
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .quick-actions-toggle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      transition: all var(--transition-normal);
+      color: white;
+    }
+
+    .quick-actions-toggle:hover { transform: scale(1.1); }
+    .quick-actions-toggle.active { transform: rotate(45deg); }
+
+    .quick-actions-menu {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all var(--transition-normal);
+    }
+
+    .quick-actions-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .quick-action-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow-md);
+      transition: all var(--transition-normal);
+      color: white;
+      position: relative;
+    }
+
+    .quick-action-btn:hover { transform: scale(1.1); }
+    .quick-action-btn.print { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .quick-action-btn.copy { background: linear-gradient(135deg, #10b981, #34d399); }
+    .quick-action-btn.bookmark { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .quick-action-btn.view-bookmarks { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+    .quick-action-btn.share { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .quick-action-btn.fullscreen { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+
+    .quick-action-btn::after {
+      content: attr(title);
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg-panel);
+      color: var(--text-main);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+      pointer-events: none;
+    }
+
+    .quick-action-btn:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .bookmark-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      padding: var(--spacing-md) 1.25rem;
+      box-shadow: var(--shadow-lg);
+      border-left: 4px solid var(--hp-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 280px;
+      max-width: 400px;
+      animation: toastIn 0.3s ease;
+      pointer-events: auto;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(100px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .toast.hiding {
+      animation: toastOut 0.3s ease forwards;
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(100px); }
+    }
+
+    .toast.success { border-left-color: #10b981; }
+    .toast.error { border-left-color: #ef4444; }
+    .toast.warning { border-left-color: #f59e0b; }
+    .toast.info { border-left-color: var(--hp-cyan); }
+
+    .toast-icon { font-size: 1.25rem; flex-shrink: 0; }
+    .toast-content { flex: 1; min-width: 0; }
+    .toast-title { font-weight: 600; font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.15rem; }
+    .toast-message { font-size: 0.8rem; color: var(--text-muted); }
+
+    .toast-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity var(--transition-fast);
+      padding: 0;
+      line-height: 1;
+      color: var(--text-main);
+    }
+
+    .toast-close:hover { opacity: 1; }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-normal);
+      padding: var(--spacing-md);
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-panel);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.9);
+      transition: all var(--transition-normal);
+    }
+
+    .modal-overlay.show .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity var(--transition-fast);
+      color: var(--text-main);
+      padding: 0;
+      line-height: 1;
+    }
+
+    .modal-close:hover { opacity: 1; }
+
+    .shortcut-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .shortcut-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-sm) 0;
+    }
+
+    .shortcut-key kbd {
+      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--hp-navy);
+      box-shadow: 0 2px 0 #cbd5e1;
+      margin-left: 0.25rem;
+      font-family: inherit;
+    }
+
+    body.dark-mode .shortcut-key kbd {
+      background: linear-gradient(135deg, #374151, #4b5563);
+      border-color: #6b7280;
+      color: #e5e7eb;
+      box-shadow: 0 2px 0 #4b5563;
+    }
+
+    .shortcut-desc { color: var(--text-muted); font-size: 0.9rem; }
+
+    /* Bookmarks */
+    .bookmarks-list { max-height: 400px; overflow-y: auto; }
+
+    .bookmark-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      margin-bottom: var(--spacing-sm);
+      transition: all var(--transition-normal);
+      cursor: pointer;
+    }
+
+    .bookmark-item:hover {
+      background: rgba(0, 150, 214, 0.15);
+      transform: translateX(5px);
+    }
+
+    .bookmark-item:last-child { margin-bottom: 0; }
+    .bookmark-info { flex: 1; min-width: 0; }
+
+    .bookmark-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      margin-bottom: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bookmark-category { font-size: 0.75rem; color: var(--text-muted); }
+
+    .bookmark-remove {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all var(--transition-fast);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+      color: var(--danger);
+    }
+
+    .bookmark-remove:hover {
+      opacity: 1;
+      background: rgba(220, 38, 38, 0.1);
+    }
+
+    .bookmarks-empty {
+      text-align: center;
+      padding: var(--spacing-xl);
+      color: var(--text-muted);
+    }
+
+    .bookmarks-empty-icon { font-size: 3rem; margin-bottom: var(--spacing-md); display: block; }
+    .bookmarks-empty-text { font-size: 0.9rem; margin-bottom: var(--spacing-sm); }
+    .bookmarks-empty-hint { font-size: 0.8rem; opacity: 0.7; }
+
+    .modal-footer {
+      margin-top: var(--spacing-lg);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .clear-bookmarks-btn {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      color: white;
+      border: none;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      font-family: inherit;
+    }
+
+    .clear-bookmarks-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    }
+
+    .clear-bookmarks-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* WISE Documents Table */
+    .modal-wide {
+      max-width: 95%;
+      width: 1200px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wise-docs-search { margin-bottom: var(--spacing-md); }
+
+    .wise-docs-search input {
+      width: 100%;
+      padding: 0.875rem var(--spacing-md);
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: var(--bg);
+      color: var(--text-main);
+      transition: all var(--transition-normal);
+    }
+
+    .wise-docs-search input::placeholder { color: var(--text-muted); }
+
+    .wise-docs-search input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .wise-docs-stats {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-sm);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    .wise-docs-stats.visible { display: block; }
+
+    .wise-docs-table-container {
+      flex: 1;
+      min-height: 200px;
+      max-height: 500px;
+      overflow-y: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .wise-docs-table-container::-webkit-scrollbar { width: 8px; height: 8px; }
+    .wise-docs-table-container::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
+    .wise-docs-table-container::-webkit-scrollbar-thumb { background: var(--gradient-primary); border-radius: 4px; }
+
+    .wise-docs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .wise-docs-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .wise-docs-table th {
+      background: var(--gradient-header);
+      color: white;
+      padding: 0.875rem var(--spacing-md);
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+      border-bottom: 2px solid var(--hp-cyan);
+    }
+
+    .wise-docs-table th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background var(--transition-fast);
+    }
+
+    .wise-docs-table th.sortable:hover {
+      background: linear-gradient(135deg, #003a4a 0%, #004a5a 30%, #00a6e6 100%);
+    }
+
+    .wise-docs-table th .sort-icon {
+      opacity: 0.5;
+      margin-left: 0.35rem;
+      font-size: 0.7rem;
+      display: inline-block;
+      transition: opacity var(--transition-fast);
+    }
+
+    .wise-docs-table th.sorted-asc .sort-icon,
+    .wise-docs-table th.sorted-desc .sort-icon { opacity: 1; }
+    .wise-docs-table th.sorted-asc .sort-icon { transform: rotate(180deg); }
+
+    .wise-docs-table td {
+      padding: 0.75rem var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .wise-docs-table tbody tr { transition: background var(--transition-fast); }
+    .wise-docs-table tbody tr:hover { background: var(--accent-soft); }
+    .wise-docs-table tbody tr:nth-child(even) { background: rgba(0, 0, 0, 0.02); }
+    body.dark-mode .wise-docs-table tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+    .wise-docs-table tbody tr:nth-child(even):hover { background: var(--accent-soft); }
+
+    .wise-doc-id {
+      font-weight: 700;
+      color: var(--hp-blue);
+      white-space: nowrap;
+      font-size: 0.9rem;
+    }
+
+    .wise-doc-docid {
+      font-family: 'Courier New', Consolas, monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.05);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    body.dark-mode .wise-doc-docid { background: rgba(255, 255, 255, 0.1); }
+
+    .wise-doc-title {
+      font-weight: 600;
+      color: var(--text-main);
+      max-width: 280px;
+      line-height: 1.4;
+    }
+
+    .wise-doc-description {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    .wise-doc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.5rem 1rem;
+      background: var(--gradient-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all var(--transition-normal);
+      white-space: nowrap;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .wise-doc-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 150, 214, 0.4);
+    }
+
+    .wise-docs-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+    }
+
+    .wise-docs-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .export-btn {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: white;
+      border: none;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      font-family: inherit;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .export-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .wise-docs-empty {
+      text-align: center;
+      padding: var(--spacing-xl) var(--spacing-md);
+      color: var(--text-muted);
+    }
+
+    .wise-docs-empty-icon { font-size: 3rem; margin-bottom: var(--spacing-md); display: block; }
+    .wise-docs-empty-text { font-size: 0.95rem; margin-bottom: var(--spacing-sm); }
+    .wise-docs-empty-hint { font-size: 0.8rem; opacity: 0.7; }
+
+    .highlight {
+      background: var(--hp-yellow);
+      color: var(--hp-navy);
+      padding: 0.1rem 0.25rem;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    body.dark-mode .highlight {
+      background: rgba(255, 209, 0, 0.4);
+      color: var(--hp-yellow);
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all var(--transition-normal);
+      z-index: 1000;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover { transform: translateY(-5px); }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--hp-cyan);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: floatParticle 20s infinite;
+      will-change: transform, opacity;
+    }
+
+    @keyframes floatParticle {
+      0%, 100% { transform: translateY(100vh); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 3s ease-out forwards;
+      will-change: transform, opacity;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    footer {
+      background: var(--gradient-header);
+      color: #f9fafb;
+      position: relative;
+      margin-top: var(--spacing-xl);
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem var(--spacing-xl) var(--spacing-lg);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .footer-section h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      color: var(--hp-cyan);
+    }
+
+    .footer-section p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: var(--spacing-sm); }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color var(--transition-normal);
+    }
+
+    .footer-links a:hover { color: var(--hp-cyan); }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-bottom p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-bottom-links { display: flex; gap: var(--spacing-lg); }
+
+    .footer-bottom-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color var(--transition-normal);
+    }
+
+    .footer-bottom-links a:hover { color: var(--hp-cyan); }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .header-content { padding: var(--spacing-md) var(--spacing-lg); }
+      main { padding: 0 var(--spacing-md); }
+    }
+
+    @media (max-width: 1000px) {
+      .modal-wide { width: 98%; max-width: none; }
+      .wise-docs-table-container { max-height: 400px; }
+      .wise-docs-table { font-size: 0.8rem; }
+      .wise-docs-table th, .wise-docs-table td { padding: 0.6rem 0.5rem; }
+      .wise-doc-title { max-width: 200px; }
+      .wise-doc-description { max-width: 220px; }
+      .wise-doc-link { padding: 0.4rem 0.75rem; font-size: 0.75rem; }
+    }
+
+    @media (max-width: 900px) {
+      main { flex-direction: column; padding: var(--spacing-md); }
+      .sidebar { width: 100%; max-height: 50vh; }
+      .header-content { padding: 0.875rem 1.25rem; flex-wrap: wrap; gap: var(--spacing-sm); }
+      .header-badge { display: none; }
+      .header-text h1 { font-size: 1.1rem; }
+      .theme-toggle, .quick-actions { right: 10px; }
+      .back-to-top { right: 10px; bottom: 10px; }
+      .detail { padding: var(--spacing-md); }
+      .detail-header h2 { font-size: 1.25rem; }
+      .tabs { flex-wrap: wrap; }
+      .tab-button { flex: 1 1 auto; min-width: 60px; font-size: 0.6rem; padding: 0.5rem 0.3rem; }
+    }
+
+    @media (max-width: 768px) {
+      .wise-docs-table th:nth-child(2), .wise-docs-table td:nth-child(2) { display: none; }
+      .wise-doc-title { max-width: 150px; }
+      .wise-doc-description { max-width: 180px; font-size: 0.75rem; }
+      .wise-docs-footer { flex-direction: column; align-items: stretch; text-align: center; }
+      .tab-button .label { display: none; }
+      .tab-button .icon { font-size: 1.1rem; }
+      .tab-button { min-width: 40px; padding: 0.6rem 0.4rem; }
+    }
+
+    @media (max-width: 600px) {
+      .hp-logo-svg { height: 36px; }
+      .header-text h1 { font-size: 1rem; }
+      .header-text span { font-size: 0.7rem; }
+      .footer-grid { gap: var(--spacing-lg); }
+      .footer-content { padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md); }
+      .quick-action-btn::after { display: none; }
+      .wise-docs-table th:nth-child(4), .wise-docs-table td:nth-child(4) { display: none; }
+      .wise-doc-title { max-width: 120px; font-size: 0.8rem; }
+    }
+
+    @media print {
+      .theme-toggle, .quick-actions, .back-to-top, .toast-container,
+      .modal-overlay, .particles, .floating-shapes, .scroll-progress,
+      header, footer, .sidebar, .confetti { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .detail { box-shadow: none !important; border: none !important; padding: 0 !important; background: white !important; }
+      .tab-content { display: block !important; page-break-inside: avoid; }
+      .tabs { display: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <div class="floating-shapes" aria-hidden="true">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+  </div>
+
+  <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode" aria-label="Toggle dark mode" aria-pressed="false">🌙</button>
+
+  <div class="toast-container" id="toastContainer" role="alert" aria-live="polite"></div>
+  <div class="confetti" id="confettiContainer" aria-hidden="true"></div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div class="modal-overlay" id="shortcutsModal" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="shortcutsTitle">⌨️ Keyboard Shortcuts</h3>
+        <button class="modal-close" id="modalClose" aria-label="Close modal">×</button>
+      </div>
+      <div class="shortcut-list">
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Navigate parameters</span>
+          <span class="shortcut-key"><kbd>↑</kbd><kbd>↓</kbd></span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Search</span>
+          <span class="shortcut-key"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Toggle dark mode</span>
+          <span class="shortcut-key"><kbd>D</kbd></span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">All tabs (Met/Not Met/Blended/II CHAT/EMEA/PSG/RSG)</span>
+          <span class="shortcut-key"><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><kbd>5</kbd><kbd>6</kbd><kbd>7</kbd></span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">View bookmarks</span>
+          <span class="shortcut-key"><kbd>B</kbd></span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Open WISE documents</span>
+          <span class="shortcut-key"><kbd>W</kbd></span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Show shortcuts</span>
+          <span class="shortcut-key"><kbd>?</kbd></span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Close modal / Clear search</span>
+          <span class="shortcut-key"><kbd>Esc</kbd></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Modal -->
+  <div class="modal-overlay" id="bookmarksModal" role="dialog" aria-modal="true" aria-labelledby="bookmarksTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="bookmarksTitle">📚 Your Bookmarks</h3>
+        <button class="modal-close" id="bookmarksModalClose" aria-label="Close modal">×</button>
+      </div>
+      <div id="bookmarksList" class="bookmarks-list"></div>
+      <div class="modal-footer">
+        <button class="clear-bookmarks-btn" id="clearBookmarksBtn">🗑️ Clear All Bookmarks</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WISE Documents Modal -->
+  <div class="modal-overlay modal-large" id="wiseDocsModal" role="dialog" aria-modal="true" aria-labelledby="wiseDocsTitle">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h3 id="wiseDocsTitle">📄 WISE Document References</h3>
+        <button class="modal-close" id="wiseDocsModalClose" aria-label="Close modal">×</button>
+      </div>
+      <div class="wise-docs-search">
+        <input type="text" id="wiseDocsSearch" placeholder="🔍 Search documents by ID, title, or description..." autocomplete="off">
+      </div>
+      <div class="wise-docs-stats" id="wiseDocsStats"></div>
+      <div class="wise-docs-table-container">
+        <table class="wise-docs-table" id="wiseDocsTable">
+          <thead>
+            <tr>
+              <th class="sortable" data-sort="id">Ref ID <span class="sort-icon">↕</span></th>
+              <th class="sortable" data-sort="docId">Document ID <span class="sort-icon">↕</span></th>
+              <th class="sortable" data-sort="title">Title <span class="sort-icon">↕</span></th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="wiseDocsBody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer wise-docs-footer">
+        <span class="wise-docs-count" id="wiseDocsCount"></span>
+        <button class="export-btn" id="exportWiseDocsBtn">📥 Export to CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions FAB -->
+  <div class="quick-actions">
+    <div class="quick-actions-menu" id="quickActionsMenu">
+      <button class="quick-action-btn fullscreen" title="Fullscreen" aria-label="Toggle fullscreen">⛶</button>
+      <button class="quick-action-btn share" title="Share" aria-label="Share current page">📤</button>
+      <button class="quick-action-btn view-bookmarks" title="View Bookmarks" aria-label="View saved bookmarks">📚</button>
+      <button class="quick-action-btn bookmark" title="Add/Remove Bookmark" aria-label="Bookmark current parameter">⭐</button>
+      <button class="quick-action-btn copy" title="Copy Content" aria-label="Copy content to clipboard">📋</button>
+      <button class="quick-action-btn print" title="Print" aria-label="Print page">🖨️</button>
+    </div>
+    <button class="quick-actions-toggle" id="quickActionsToggle" aria-label="Quick actions menu" aria-expanded="false" aria-controls="quickActionsMenu">✚</button>
+  </div>
+
+  <button class="back-to-top" id="backToTop" title="Back to Top" aria-label="Scroll back to top">↑</button>
+
+  <header role="banner">
+    <div class="header-content">
+      <div class="header-left">
+        <!-- EMBEDDED SVG LOGO - No external file needed -->
+        <svg class="hp-logo-svg" viewBox="0 0 150 60" xmlns="http://www.w3.org/2000/svg" aria-label="HP Instant Ink logo">
+          <defs>
+            <linearGradient id="hpGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#0096d6"/>
+              <stop offset="100%" style="stop-color:#00b5e2"/>
+            </linearGradient>
+          </defs>
+          <!-- HP Circle -->
+          <circle cx="30" cy="30" r="28" fill="url(#hpGradient)"/>
+          <!-- HP Letters -->
+          <text x="30" y="38" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="24">hp</text>
+          <!-- Instant Ink Text -->
+          <text x="75" y="28" fill="white" font-family="Arial, sans-serif" font-weight="600" font-size="14">instant</text>
+          <text x="75" y="46" fill="#00b5e2" font-family="Arial, sans-serif" font-weight="700" font-size="16">ink</text>
+        </svg>
+        <div class="header-text">
+          <h1>🎯 QA Compendium – HP Instant Ink AMS Voice</h1>
+          <span>📋 Scoring guide for MET / NOT MET / BLENDED (II & PRINT)</span>
+        </div>
+      </div>
+      <div class="header-badge" aria-label="Quality badge">✨ Premium Quality Standards</div>
+    </div>
+  </header>
+
+  <main id="main-content" role="main">
+    <aside class="sidebar" role="complementary" aria-label="Parameter navigation">
+      <div class="sidebar-inner">
+        <div class="search-box">
+          <label for="searchInput" class="sr-only">Search parameters</label>
+          <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="Search parameters..." autocomplete="off" aria-describedby="searchHint">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+          </div>
+          <small id="searchHint" class="search-hint">💡 Search by name or keywords in all tabs</small>
+          <div id="searchStats" class="search-stats" style="display: none;"></div>
+        </div>
+        <div id="categoryFilters" class="category-filters" role="group" aria-label="Filter by category"></div>
+        <ul id="parameterList" class="parameter-list" role="listbox" aria-label="Parameter list" tabindex="0"></ul>
+        <div id="recentlyViewedContainer"></div>
+      </div>
+    </aside>
+
+    <section class="detail" aria-labelledby="detailName">
+      <div class="detail-header">
+        <h2 id="detailName">👈 Select a parameter</h2>
+        <div><span id="detailCategory" class="badge">📌 No parameter selected</span></div>
+        <p id="detailSummary" class="subtitle">Choose a parameter on the left to see how it should be scored.</p>
+      </div>
+      
+      <!-- Updated Tabs with 7 tabs -->
+      <div class="tabs" role="tablist" aria-label="Scoring tabs">
+        <button class="tab-button met active" data-tab="met" type="button" role="tab" id="tab-btn-met" aria-selected="true" aria-controls="tab-met">
+          <span class="icon" aria-hidden="true">✅</span><span class="label">Met</span>
+        </button>
+        <button class="tab-button notmet" data-tab="notMet" type="button" role="tab" id="tab-btn-notmet" aria-selected="false" aria-controls="tab-notMet">
+          <span class="icon" aria-hidden="true">❌</span><span class="label">Not Met</span>
+        </button>
+        <button class="tab-button blended" data-tab="blended" type="button" role="tab" id="tab-btn-blended" aria-selected="false" aria-controls="tab-blended">
+          <span class="icon" aria-hidden="true">🔀</span><span class="label">Blended</span>
+        </button>
+        <button class="tab-button iichat" data-tab="iiChat" type="button" role="tab" id="tab-btn-iichat" aria-selected="false" aria-controls="tab-iiChat">
+          <span class="icon" aria-hidden="true">💬</span><span class="label">II CHAT</span>
+        </button>
+        <button class="tab-button emea" data-tab="emea" type="button" role="tab" id="tab-btn-emea" aria-selected="false" aria-controls="tab-emea">
+          <span class="icon" aria-hidden="true">🌍</span><span class="label">EMEA</span>
+        </button>
+        <button class="tab-button psg" data-tab="psg" type="button" role="tab" id="tab-btn-psg" aria-selected="false" aria-controls="tab-psg">
+          <span class="icon" aria-hidden="true">🖥️</span><span class="label">PSG</span>
+        </button>
+        <button class="tab-button rsg" data-tab="rsg" type="button" role="tab" id="tab-btn-rsg" aria-selected="false" aria-controls="tab-rsg">
+          <span class="icon" aria-hidden="true">🔧</span><span class="label">RSG</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Areas -->
+      <article id="tab-met" class="tab-content active" role="tabpanel" aria-labelledby="tab-btn-met" data-tab-title="MET Criteria"></article>
+      <article id="tab-notMet" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-notmet" data-tab-title="NOT MET Criteria" hidden></article>
+      <article id="tab-blended" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-blended" data-tab-title="BLENDED Criteria" hidden></article>
+      <article id="tab-iiChat" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-iichat" data-tab-title="II CHAT Criteria" hidden></article>
+      <article id="tab-emea" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-emea" data-tab-title="EMEA Criteria" hidden></article>
+      <article id="tab-psg" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-psg" data-tab-title="PSG Criteria" hidden></article>
+      <article id="tab-rsg" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-rsg" data-tab-title="RSG Criteria" hidden></article>
+    </section>
+    </main>
+
+  <footer role="contentinfo">
+    <div class="footer-content">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h3>🎯 QA Compendium</h3>
+          <p>Your comprehensive scoring guide for HP Instant Ink AMS Voice quality assurance. Ensuring excellence in every customer interaction.</p>
+        </div>
+        <div class="footer-section">
+          <h3>📚 Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#" data-category="Service Flow Attributes">Service Flow Attributes</a></li>
+            <li><a href="#" data-category="TSP (Tools, System & Process) Flow Attributes">TSP Flow Attributes</a></li>
+            <li><a href="#" data-category="Compliance">Compliance Guidelines</a></li>
+            <li><a href="#" data-category="Tracking Questions">Tracking Questions</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>🛠️ Resources</h3>
+          <ul class="footer-links">
+            <li><a href="#" id="openWiseDocsBtn">📄 WISE Documentation</a></li>
+            <li><a href="https://cnxmail.sharepoint.com/:f:/s/hptraining/IgB9pU2lEx26Rql6M7-GjAptAUUgRK8FUY1jz8N1_iuJnag?email=sundeep.bhardwaj%40concentrix.com&e=TDF7K0" target="_blank" rel="noopener noreferrer">📚 Training Resources for PRINT</a></li>
+            <li><a href="#">Escalation Procedures</a></li>
+            <li><a href="#">Support Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>📞 Support</h3>
+          <p>📧 support mo sarile mo malaki kana<br>🕐 Available anytime</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Team Kate. All Rights Reserved. QA Compendium v12012025</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ==================== PARAMETERS DATA ====================
+    const parameters = [
+      {
+        id: "compassion",
+        name: "Compassion",
+        category: "Service Flow Attributes",
+        summary: "Recognize and validate the customer's feelings, concerns, or frustrations in a sincere and respectful way.",
+        met: `<p>Compassion is the ability to recognize and validate the customer's feelings, concerns, or frustrations in a sincere and respectful way which includes but is not limited to the following:</p><ul><li>Use of empathetic statements.</li><li>Showing patience and understanding.</li><li>Demonstrates genuine interest in resolving the customer's issue.</li><li>Is authentic and backed by actions.</li></ul>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p><strong>A. Empathy and Sympathy; When Needed:</strong> Game-changers should validate the customer's feelings, concerns, or frustrations whenever present.</p>`,
+        iiChat: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines related to this sub-parameter shall remain in full force and are hereby adopted.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Compassion. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Compassion. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Compassion. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "ownership",
+        name: "Ownership",
+        category: "Service Flow Attributes",
+        summary: "Take full responsibility for the customer's issue from start to finish, including interaction drops.",
+        met: `<p>Ownership is the willingness to take full responsibility for the customer's issue from start to finish. It includes the intent of a game-changer to provide a full resolution to the customer and not transfer the responsibility to anyone else which includes but is not limited to:</p><ul><li>Avoiding unnecessary hand-offs or excuses.</li><li>Not shifting blame to other teams or individuals.</li><li>Ensures the case is not closed until full resolution is confirmed with the customer.</li><li>Taking of all necessary actions to ensure a resolution.</li></ul><p><strong>Interaction Drop:</strong></p><p>The game-changer must demonstrate proper handling of cases when a session is disconnected before reaching a natural closure which includes but is not limited to:</p><ul><li>Attempting to reconnect with the customer.</li><li>Documenting the reason and actions taken in the case notes.</li><li>Continue support if reconnection is successful and offer follow-up where applicable.</li></ul>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>. In cases where the game-changer fails to adhere to the guidelines specific to <strong>Interaction Drop</strong>, evaluators shall select the corresponding dropdown option labeled <strong>"Interaction Drop"</strong> instead.</p>`,
+        blended: `<p><strong>A. Difference; Interaction Drop and Callback/Follow-up:</strong> Interaction Drop refers to an unintended disconnection during the call, while a Callback/Follow-up is a deliberate, scheduled attempt to reconnect with the customer after the initial interaction.</p><p><strong>B. Asking for Best Callback Number:</strong> To ensure that a full resolution is provided in the event that a follow-up is needed or in cases when calls get disconnected, Game-Changers must request a callback number during every interaction, even if a number is already displayed in the CTI. If the number provided by the customer differs from the one shown in CTI, the Game-Changer must confirm which number should be used for the callback and ensure it is properly documented. Additionally, the Game-Changer must not proactively state or suggest the customer's phone number, whether in full or in part.</p>`,
+        iiChat: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines related to this sub-parameter shall remain in full force and are hereby adopted.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Ownership. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Ownership. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Ownership. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "assurance",
+        name: "Assurance/Sound Confident",
+        category: "Service Flow Attributes",
+        summary: "Reassure the customer that their issue is understood and will be resolved effectively, with confidence.",
+        met: `<p>Assurance is the ability to build trust by reassuring the customer that their issue is understood and will be resolved effectively which includes but is not limited to:</p><ul><li>Speaking with confidence and demonstration of strong product or service knowledge.</li><li>Avoidance of appearing unsure or confused during the interaction.</li><li>Making the customer feel they are in capable hands.</li></ul>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p class="muted">No specific BLENDED AMS VOICE (II & PRINT) rules are defined for Assurance/Sound Confident.</p>`,
+        iiChat: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines related to this sub-parameter shall remain in full force and are hereby adopted.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Presented solution in a concise and precise manner</li><li>Agent used layman terms</li><li>Match/adjusted customers technical abilities</li><li>Match/adjusted customers rate of speech</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Assurance/Sound Confident. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Assurance/Sound Confident. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "soft-skills",
+        name: "Soft Skills",
+        category: "Service Flow Attributes",
+        summary: "Interpersonal skills that create a positive, tailored customer experience and build rapport.",
+        met: `<p>Soft skills are interpersonal skills that help create a positive and tailored customer experience which includes but is not limited to:</p><ul><li>Adapting to the customer's personality and building rapport.</li><li>Promoting open communication to better identify and solve issues.</li></ul><p>The following areas should be considered:</p><ol><li><strong>Active Engagement:</strong> Staying actively involved and attentive throughout the customer interaction. The game-changer demonstrates a clear commitment to understanding and guiding the conversation by building rapport and using paraphrasing techniques to confirm comprehension and maintain clarity.</li><li><strong>Personalization:</strong> Adjusting the conversation to the customer's pace, tone, preferences, and communication style. Game-changers are expected to use the customer's name and reference their previous interactions or preferences.</li><li><strong>Objection Handling / Negotiation:</strong> Professionally addressing customer doubts, objections, or resistance with empathy & solution-oriented responses.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s, namely:</p><ul><li>Active Engagement</li><li>Personalization</li><li>Objection Handling / Negotiation</li></ul>`,
+        blended: `<p><strong>A. Personalization; When Needed:</strong> The game-changer must adjust the conversation to the customer's pace, tone, preferences, and communication style.</p><p><strong>B. Sales Offer Objection:</strong> In cases when a customer shows doubt, objection, or resistance to the sales offer, game-changer should properly address such doubt, objection, or resistance with empathy & solution-oriented responses.</p>`,
+        iiChat: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines related to this sub-parameter shall remain in full force and are hereby adopted.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Rapport building</li><li>Good call flow (no verbal collisions).</li><li>Respond appropriately to customers objections (Sales - rebuttals)</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Soft Skills. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Soft Skills. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "language-grammar",
+        name: "Language/Grammar Skills",
+        category: "Service Flow Attributes",
+        summary: "Use appropriate, clear language with correct grammar and vocabulary aligned with the customer's context.",
+        met: `<p>Language/Grammar Skills is the use of appropriate and clear language in all interactions which includes but is not limited to:</p><ul><li>Communicating clearly and accurately using correct grammar and spelling.</li><li>Use vocabulary that aligns with the customer's context.</li><li>Avoid technical or overly complex language.</li><li>Avoiding usage of internal acronyms or terminology that the customer may not understand.</li><li>Asking well-structured, clearly articulated questions to ensure the customer can easily understand and respond.</li></ul>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p class="muted">No specific BLENDED AMS VOICE (II & PRINT) rules are defined for Language/Grammar Skills.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Language/Grammar Skills. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Language/Grammar Skills. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Language/Grammar Skills. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Language/Grammar Skills. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "professionalism",
+        name: "Professionalism",
+        category: "Service Flow Attributes",
+        summary: "Maintain a professional tone, language, and attitude at all times, using neutral and respectful language.",
+        met: `<p>Professionalism is maintaining a professional tone, language, and attitude always which includes but is not limited to:</p><ul><li>Use of <strong>Neutral Language</strong> (objective, unbiased, and free from emotionally charged, judgmental, or loaded words).</li><li>Being courteous, respectful, and following communication guidelines.</li><li>Avoiding informal or dismissive language, as well as negative comments about other brands or internal teams.</li><li>Use of positive positioning when speaking about HP products and services.</li></ul><p>However, unprofessional behaviour like <strong>rudeness</strong> may lead to audit markdowns in <strong>Compliance.</strong></p>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p><strong>A. Professionalism and Compliance; Difference:</strong> Professionalism issues reflect lower-severity concerns where the agent's tone or language is not ideal but does not break policy. Compliance issues represent higher-severity behavior, where the agent crosses a clear line by being rude, disrespectful, or violating communication standards.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Professionalism. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Professionalism. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Professionalism. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Professionalism. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "educating-customer",
+        name: "Educating Customer/KCI",
+        category: "Service Flow Attributes",
+        summary: "Educate the customer throughout the interaction to support resolution and avoid future issues.",
+        met: `<p>Educating the customer throughout the interaction to support resolution and avoid future issues which includes but is not limited to:</p><ul><li>Explaining each step of the troubleshooting process and setting of expectations.</li><li>Sharing helpful tips or preventive information.</li><li>Providing relevant updates and clarifying next steps.</li></ul>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p><strong>A. On Call Check-Point (OCCP):</strong> Game-changers should provide OCCP for troubleshooting calls and those which necessitates the usage of remote tools.</p><p><strong>B. Support Phone Numbers:</strong> Game-changers should provide the applicable support phone number.</p><p><strong>C. IIME & AiP Email Templates:</strong> Game-changers should provide the IIME in every II support interaction.</p><p><strong>D. Entitlement:</strong> For PRINT calls or any process requiring entitlement education, the Game-Changer must confirm and clearly communicate the customer's warranty or subscription entitlement.</p><p><strong>E. Support Websites:</strong> Game-changers must either provide customers with the appropriate support website or clearly inform them of its availability.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Educating Customer/KCI. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Agent deliver OCCP and/or Set time and troubleshooting expectations {steps}</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Educating Customer/KCI. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Educating Customer/KCI. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "resolution",
+        name: "Did the Engineer Provide Resolution?",
+        category: "Service Flow Attributes",
+        summary: "Resolve all customer issues/inquiries during the interaction when in scope.",
+        met: `<p>The game-changer resolves all of the customer's issues or inquiries during the interaction, ensuring that the resolution is accurately and effectively provided.</p><p>However, this parameter is inapplicable when, for a valid reason, the game-changer is prevented from providing a resolution such as but not limited to waiting for customer confirmation.</p>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p><strong>A. Resolution; When Applicable:</strong> Resolution applies only when the issue is fully or partially within scope; a Game-Changer meets this requirement by making a genuine attempt to resolve the in-scope concern.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Resolution. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Resolution. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Resolution. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Resolution. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "interaction-management",
+        name: "Interaction Management",
+        category: "Service Flow Attributes",
+        summary: "Manage hold, dead air, mute, snooze, and response times while keeping the customer informed.",
+        met: `<p>Interaction Management is the ability to manage the flow of the interaction efficiently while maintaining customer engagement. The following areas should be considered:</p><ol><li><strong>Hold:</strong> Ask for permission, explain the reason, provide expected duration.</li><li><strong>Dead Air:</strong> Avoid unacknowledged silence that causes discomfort or confusion.</li><li><strong>Mute:</strong> Use Mute Procedure as per Team guidelines.</li><li><strong>Snooze:</strong> Follow regional snooze process guidelines and document properly.</li><li><strong>Delayed Response:</strong> Respond the chat timely with a sense of urgency.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s, namely:</p><ul><li>Hold</li><li>Dead air</li><li>Snooze</li><li>Delayed Response</li></ul>`,
+        blended: `<p><strong>A. Hold Procedure:</strong> See: NA Consumer PPS-Agent Call Flow and Scripts.</p><p><strong>B. Dead Air:</strong> The Game-Changer must avoid dead air that could make the customer question the game-changer's presence.</p><p><strong>C. Mute:</strong> Game-changers may use mute only when the process permits or it is clearly communicated.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Interaction Management. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Interaction Management. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Interaction Management. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Interaction Management. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "opening",
+        name: "Opening",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Begin promptly with a warm, professional greeting and proper introduction.",
+        met: `<p>The game-changer begins the interaction promptly with a warm, professional and understandable greeting that sets a positive tone and welcomes the customer. The following areas should be considered:</p><ol><li><strong>Delayed opening:</strong> Long pause (>5 seconds) or hesitation before greeting.</li><li><strong>Proper Introduction:</strong> Fails to include game-changer's name, role, or company brand.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s, namely:</p><ul><li>Delayed Opening</li><li>Proper Introduction</li></ul>`,
+        blended: `<p><strong>A. Delayed Opening:</strong> The game-changer will be marked "MET" as long as they initiate communication within 5 seconds—or, in justified cases, within 10 seconds.</p><p><strong>B. Proper Introduction:</strong> The game-changer should utilize the CTI script, otherwise, use the alternate script and document the reason for non-usage.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Opening. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Opening. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Opening. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Opening. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "technical-skills",
+        name: "Technical Skills",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Apply knowledge and tools effectively to diagnose and resolve customer issues.",
+        met: `<p>Technical Skills should be scored when the game-changer applies their knowledge & skills effectively to diagnose and resolve customer issues. The following areas should be considered:</p><ol><li><strong>Incorrect Diagnosis:</strong> Incorrect root cause selection, inaccurate resolution path.</li><li><strong>Probing & Comprehension:</strong> The game-changer uses thoughtful, targeted questions and resources to fully understand the customer's needs.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s, namely:</p><ul><li>Incorrect Diagnosis</li><li>Probing & Comprehension</li></ul>`,
+        blended: `<p><strong>A. Incorrect Diagnosis and Incorrect Smart Solutions Troubleshooting Guide Selection:</strong> A game-changer is marked for incorrect diagnosis when they choose a Troubleshooting Guide in Smart Solutions that does not correspond to any of the customer's actual issues and it results to an inaccurate resolution path.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Technical Skills. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Paraphrase the issue when necessary</li><li>Ask relevant probing questions</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Technical Skills. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Technical Skills. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "tool-usage",
+        name: "Tool Usage",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Use the appropriate tools correctly to provide an effective and quick resolution.",
+        met: `<p>Tools Usage evaluates the correct usage of the tools the game-changers have available. The following tools are to be considered:</p><ol><li>Log Me In</li><li>Live Lens</li><li>CTI</li><li>AST - Instant Ink</li><li>Smart Solutions</li><li>DCC (Device Control Center)</li><li>Other (should specify in the audit feedback)</li></ol>`,
+        notMet: `<p>When the agents are not using the tools (when necessary) or when they use them but not effectively/correctly, the applicable tool/s should be selected.</p>`,
+        blended: `<p><strong>A. Smart Solutions Usage:</strong> The following guidelines shall apply in the usage of the Troubleshooting Guide in Smart Solutions:</p><p>i. If the customer reports multiple issues, the game-changer will still meet this parameter as long as at least one selected Troubleshooting Guide directly relates to any of those issues.</p><p>ii. If no Troubleshooting Guide is selected, the game-changer should be evaluated under the Tools Usage sub-parameter for non-usage when required, unless the game-changer has documented valid, justifiable reasons for not using the tool.</p><p>iii. If no or at least one non-related Troubleshooting Guide is selected resulting to an inaccurate resolution, the game-changer must also receive a markdown under the sub-parameter Technical Skills > Incorrect Diagnosis.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Tool Usage. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Deliver Live Lens disclaimer and spiel</li><li>Deliver Live Control disclaimer and spiel</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Tool Usage. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Tool Usage. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "global-case-qc",
+        name: "Global Case/QC Creation & Documentation Process",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Create cases and document interaction details accurately following global processes.",
+        met: `<p>Game-changers must follow the Global procedures for creating a Main Case or Quick Case and comply with the Global Documentation Process. The following should be considered:</p><ol><li><strong>Incorrect Case/QC Creation:</strong> Follow the correct guidelines to create a main case or quick case depending on the scenarios listed in the Wise process Global Case & Quick Case Creation Process ish_13001331-13001188-16. For SoMe Note: Scenarios when to create a case are covered in wise doc ish_10791187-10791234-16. Quick cases are not applicable for SoMe.</li><li><strong>Incorrect Resolution Code Usage:</strong> Resolution Code reference in Global Case Resolution Code Usage Process.</li><li><strong>No Documentation:</strong> This should be selected when the game-changer doesn't add any supplemental or technical notes to update the Dynamic Notes when necessary according to the Global - Case Documentation Process ish_12778742-12777740-16</li><li><strong>Partial/Incorrect Documentation:</strong> Documentation is incomplete or incorrect based on what happened on the interaction.</li><li><strong>Incorrect Order Set Up (Critical):</strong> When creating orders to offer a resolution, game-changers should create & document orders correctly.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s.</p>`,
+        blended: `<p><strong>A. Taggings:</strong> The following taggings will be scored in this parameter: Program Category, Resolution Code, OTC, GT Status and all other tags.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Global Case/QC Creation & Documentation Process. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Select the correct Program Category</li><li>Select the correct Resolution Code</li><li>Select the correct Case Status</li><li>Select the correct Asset</li><li>Used correct eShooter template</li><li>Sets Visible Externally as "NO"</li><li>Agent enter complete notes</li><li>Agent enter accurate notes</li><li>Created a case and followed the case creation guidelines</li><li>Created a quick case and followed the quick case creation guidelines</li><li>Linked/related the case or quick case to customer profile</li><li>Agent DID NOT change the any customer information without their permission</li><li>Agent accurately documented any customer information on the account</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Global Case/QC Creation & Documentation Process. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Global Case/QC Creation & Documentation Process. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "process",
+        name: "Process",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Follow all required processes, including those marked as critical.",
+        met: `<p>The game-changer follows all required processes (excluding SPOS, incident logging, etc., which are evaluated separately).</p><p><strong>Critical Process:</strong> If a team has a process that is considered critical for the business.</p>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p><strong>A. Transfer Process:</strong> For out-of-scope issues, Game-Changers must follow the proper transfer procedure.</p><p><strong>B. Escalation Process:</strong> Game-Changers must escalate issues when they exceed their scope.</p><p><strong>C. PII Verification:</strong> Before making any account changes or when ownership verification is required, the Game-Changer must authenticate the caller.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Process. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Escalation Process</li><li>Transfer Process</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Process. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Process. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "spos",
+        name: "Sales Order Process (SPOS)",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Check whether the HP sales process is followed when a sales opportunity exists.",
+        met: `<p>Sales Order Process (SPOS) Checks if the game-changer followed the HP sales process when applicable. The following should be considered:</p><ol><li><strong>Not Offered:</strong> Sales opportunities must be consistently offered to customers whenever applicable.</li><li><strong>Sales Offer Not Created:</strong> Sales Offer must be created whenever a sales pitch has been done.</li><li><strong>Incorrect Pitch or Irrelevant:</strong> Sales pitches must be accurate, relevant, and aligned with the customer's needs.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s.</p>`,
+        blended: `<p><strong>A. Sales pitch:</strong> Should be understood as when: 1) the game-changer explicitly invites the customer to decide to avail of the product; or 2) there is a clear intention to sell, such as when at least one benefit of the relevant product is communicated.</p><p><strong>B. When is AiP Optional:</strong> If the product is newly bought or is not yet nearing the end of its warranty (90 days and below), offering AiP is optional.</p><p><strong>C. When to offer Instant Ink:</strong> If a customer declines AiP but has a printer or prefers to just have Instant Ink, game-changers should offer, educate, and guide the customer in availing the Instant Ink subscription.</p><p><strong>D. Replacement Units Are Not Treated as New Enrollments; Instant Ink:</strong> When a customer adds a replacement printer to an existing Instant Ink subscription, it does not qualify as a new enrollment. Do not create a sales offer for this scenario as doing so is considered irrelevant or incorrect pitching.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Sales Order Process (SPOS). Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Identify the Sales Clues used by the customer to lead to an appropriate offer</li><li>Ensure that the customer understood the importance of acquiring the product/service being offered {Current or New Product}</li><li>Verify and document the correct customer billing and shipping information</li><li>Select the correct Plan</li><li>Documented the correct payment information</li><li>Submit sales offer</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Sales Order Process (SPOS). Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Sales Order Process (SPOS). Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "callback-followup",
+        name: "Callback/Follow-up",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Follow the correct global callback and courtesy callback processes.",
+        met: `<p>Game-changers should follow the correct Global Technical Callback Process & the Global Courtesy Callback Process.</p>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored <strong>"Not Met"</strong>.</p>`,
+        blended: `<p><strong>A. When is a Follow-Up Needed; Instant Ink:</strong> Game-changers handling Instant Ink are to be evaluated whether they completed the required follow up actions correctly in relation to the callback matrix found in <a href="https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_11482540-11477237-16&contentType=Process%20Document&selectedLangCode=en" target="_blank">NA - E2E HP Instant Ink – Support Process Guidelines.</a></p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Callback/Follow-up. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Callback/Follow-up. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Callback/Follow-up. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Callback/Follow-up. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "customer-contact-product",
+        name: "Customer Contact/Product Details",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "Capture and document customer contact and product details promptly and accurately.",
+        met: `<p>All customer contact and product details must be captured promptly to verify customer data and entitlement information. The following should be considered:</p><ol><li><strong>Email:</strong> Customer email addresses must be accurately captured.</li><li><strong>Address:</strong> Customer address must be accurately captured.</li><li><strong>Phone Number:</strong> Customer phone numbers must be accurately captured.</li><li><strong>Company Name:</strong> Company Name must be accurately captured.</li><li><strong>Customer Name:</strong> Customer Name must be accurately captured.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s.</p>`,
+        blended: `<p><strong>A. Customer Contact/Product Details and PII Verification; Difference:</strong> Customer Contact/Product Details will only be scored when these fields are used to confirm that the correct account was pulled up.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Customer Contact/Product Details. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Customer Contact/Product Details. Follow the MET/NOT MET guidelines.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Customer Contact/Product Details. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Customer Contact/Product Details. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "closing",
+        name: "Closing",
+        category: "TSP (Tools, System & Process) Flow Attributes",
+        summary: "End the conversation politely, address all issues, and maintain brand tone.",
+        met: `<p>The game-changer ends the conversation politely, ensuring all issues are addressed, thanking the customer, and maintaining brand tone. The following should be considered:</p><ol><li><strong>Delayed Closed:</strong> The closure is done between 10 and 60 seconds after the main conversation has concluded.</li><li><strong>Not offer additional Assistance:</strong> The game-changer fails to ask if the customer needs anything else.</li><li><strong>Didn't Provide Case Number:</strong> The case number is not provided either verbally or in writing.</li><li><strong>Interaction Manipulation (Critical):</strong> Any attempt to manipulate the outcome or flow of a customer interaction.</li><li><strong>Branding:</strong> This refers to how the game-changer reinforces the company's image.</li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s.</p>`,
+        blended: `<p><strong>A. Delayed Close (Lingering):</strong> A game-changer is considered delayed if the call is not closed within 10 seconds after the main interaction has ended.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Closing. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>Summarize the resolution or next steps.</li><li>Provide/offer/send case number.</li><li>Ask if the customer needs further assistance.</li><li>Deliver satisfaction survey.</li><li>Use the HP salutation/branding.</li><li>Provide HP support website.</li><li>Thank the customer and close the call politely.</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Closing. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Closing. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "compliance",
+        name: "Compliance",
+        category: "Compliance",
+        summary: "Comply with all applicable compliance items: record integrity, etiquette, survey, trade, privacy, HIPAA, PCI, and local law.",
+        met: `<p>The game-changer complies with all applicable compliance items. The following should be considered:</p><ol><li><strong>Case Record Integrity (NCLF & Fabrication)</strong></li><li><strong>Interaction Etiquette</strong></li><li><strong>Survey Avoidance</strong></li><li><strong>Global Trade Process</strong></li><li><strong>Privacy Compliance / Data Privacy</strong></li><li><strong>HIPAA Compliance</strong></li><li><strong>PCI Compliance</strong></li><li><strong>Country Specific Law</strong></li></ol>`,
+        notMet: `<p>Failure to follow the guidelines in MET should be scored based on the applicable dropdown/s.</p>`,
+        blended: `<p class="muted">No separate BLENDED rules defined for Compliance; use the MET and NOT MET guidance.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Compliance. Follow the MET/NOT MET guidelines.</p>`,
+        emea: `<p>Except as otherwise provided in this Compendium, and only to the extent that they do not conflict with its provisions, all previously issued Quality Guidelines pertaining to the following sub-parameters shall remain in full force and are hereby adopted:<ul><li>DID NOT Share end user-sensitive info to unauthorized party</li><li>DID NOT Share HP-sensitive info to unauthorized party</li><li>DID NOT Share CNX-sensitive info to unauthorized party</li></ul></p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Compliance. Follow the MET/NOT MET guidelines.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Compliance. Follow the MET/NOT MET guidelines.</p>`,
+      },
+      {
+        id: "fcr",
+        name: "FCR (First Contact Resolution)",
+        category: "Tracking Questions",
+        summary: "Tracking whether first contact resolution was achieved and the main reason when it was not.",
+        met: `<p>First Contact Resolution should be attempted in the first interaction. The following should be considered:</p><ul><li><strong>Customer:</strong> FCR not provided due to Customer situation.</li><li><strong>Agent:</strong> FCR not provided because game-changer didn't identify/use the opportunity.</li><li><strong>HP Policies & Procedures:</strong> Non Controllable situations.</li><li><strong>Repeat Contact:</strong> Customer had contacted HP previously for the same issue.</li></ul>`,
+        notMet: `<p class="muted">FCR is a tracking question. It is not scored as MET/NOT MET.</p>`,
+        blended: `<p class="muted">No BLENDED rules defined for FCR.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for FCR.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for FCR.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for FCR.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for FCR.</p>`,
+      },
+      {
+        id: "ivr-feedback",
+        name: "IVR Feedback",
+        category: "Tracking Questions",
+        summary: "Tracking feedback on how the IVR recognized and handled the customer's input.",
+        met: `<p>Select the option that best fit to provide feedback about the IVR:</p><ul><li><strong>Input Fully Recognized</strong></li><li><strong>Input Not Understood</strong></li><li><strong>Partial/Unclear Input</strong></li><li><strong>No Customer Input</strong></li><li><strong>No IVR Available</strong></li><li><strong>Other</strong></li></ul>`,
+        notMet: `<p class="muted">IVR Feedback is a tracking field and is not scored as MET/NOT MET.</p>`,
+        blended: `<p><strong>A. When Not Applicable; Voice Interaction:</strong> If the Genesys recording does not clearly indicate that a segment is an IVR input, evaluators should mark this criterion as "N/A."</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for IVR Feedback.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for IVR Feedback.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for IVR Feedback.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for IVR Feedback.</p>`,
+      },
+      {
+        id: "survey-prediction",
+        name: "Survey Prediction",
+        category: "Tracking Questions",
+        summary: "Evaluator prediction of the customer's survey result.",
+        met: `<p>Evaluator to predict the survey based on customer's baggage, interaction & post interaction:</p><ul><li>CSAT - Satisfied</li><li>MSAT - Neutral</li><li>DSAT - Dissatisfied</li></ul>`,
+        notMet: `<p class="muted">Survey Prediction is a tracking field; there is no separate NOT MET rubric.</p>`,
+        blended: `<p class="muted">No BLENDED rules defined for Survey Prediction.</p>`,
+        iiChat: `<p class="muted">No specific II CHAT rules defined for Survey Prediction.</p>`,
+        emea: `<p class="muted">No specific EMEA rules defined for Survey Prediction.</p>`,
+        psg: `<p class="muted">No specific PSG rules defined for Survey Prediction.</p>`,
+        rsg: `<p class="muted">No specific RSG rules defined for Survey Prediction.</p>`,
+      },
+    ];
+
+    // ==================== WISE DOCUMENTS DATA ====================
+    const wiseDocuments = [
+      {
+        id: "R001",
+        docId: "ish_12062919-12062597-16",
+        title: "NA Consumer PPS-Agent Call Flow and Scripts",
+        description: "A customer calls in for support in any of the NA Contact Centers.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_12062919-12062597-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R002",
+        docId: "ish_11482540-11477237-16",
+        title: "NA - E2E HP Instant Ink – Support Process Guidelines",
+        description: "This document outlines the support guidelines for Instant Ink teams.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_11482540-11477237-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R003",
+        docId: "ish_11555329-11543392-16",
+        title: "Global-Launch Remote and Generate PIN using LMI Remote View Control (Web Technician Console)",
+        description: "How and when to connect with a customer via LMI Remote View Control to provide troubleshooting guidance.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_11555329-11543392-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R004",
+        docId: "ish_11555577-11539907-16",
+        title: "One Way Video Support with LogMeIn Live Lens",
+        description: "This document provides agents the necessary detail on key policy and process information for launching LogMeIN Live Lens and describes how to use for remote troubleshooting with one way video support.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_11555577-11539907-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R005",
+        docId: "ish_10231260-10229562-16",
+        title: "NA Consumer PPS – HP All-In Plan (Print) SPOS Process",
+        description: "This document outlines the assisted SPOS for the Print and Instant Ink agents who will be offering HP All-In Plan to the customers.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_10231260-10229562-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R006",
+        docId: "ish_8147878-8085091-16",
+        title: "Global - Handling Customers with Inappropriate Behaviors",
+        description: "This document outlines how to handle sensitive and critical situations including, but not limited to, abusive/hostile/inappropriate/pervert customers' behavior while engaging over the phone, in chat, or during a remote Live Lens session.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_8147878-8085091-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R007",
+        docId: "ish_8858392-8858143-16",
+        title: "Global Case Resolution Code Usage",
+        description: "This document describes the process to select the correct resolution codes for case closure in CDAX. This process is to be used by the Customer Care Center agents to select the appropriate resolution code in CDAX prior to case closure (manual or autoclosure).",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_8858392-8858143-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R008",
+        docId: "ish_9163873-9163508-16",
+        title: "Global - Handling Personal Information",
+        description: "Proper use of customer's personal information (PII) during the case handling.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_9163873-9163508-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R009",
+        docId: "ish_11186932-11183220-16",
+        title: "Global Misroute Handling Process",
+        description: "Provide instructions for Contact Center agents to identify and properly handle misroutes (call or case) with the appropriate support team (case transfer, call transfer and customer handling).",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_11186932-11183220-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R010",
+        docId: "ish_10296224-10290533-16",
+        title: "Global - HP Privacy message for Inbound and Outbound calls",
+        description: "The objective of this process is to define the guidelines for HP Privacy messages for Inbound and Outbound Calls.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_10296224-10290533-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R011",
+        docId: "ish_10282203-8834753-16",
+        title: "Global - CDAX Master Process",
+        description: "Collection of how-to procedures for CDAX.",
+        url: "https://wise.hp.com/wise/DocumentDetail/emea-en?docId=ish_10282203-8834753-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R012",
+        docId: "ish_12330637-12330684-16",
+        title: "Instant Ink - Validating Instant Ink account ownership",
+        description: "This document explains how to validate ownership of the Instant Ink account when needed.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_12330637-12330684-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R013",
+        docId: "ish_11764125-11763742-16",
+        title: "NA Front Line Agent Processes (Non-Instant Ink) - Handling Instant Ink Calls Process",
+        description: "This document outlines the guidelines for Non-Instant Ink (Print Hardware) agents to support the customers with HP Instant Ink enrolled printers.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_11764125-11763742-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R014",
+        docId: "ish_12336508-12336555-16",
+        title: "Instant Ink Retention Agent Guidelines",
+        description: "This document outlines the agent guidelines to prevent Instant Ink account cancellation and to keep the enrollment.",
+        url: "https://wise.hp.com/wise/DocumentDetail/ams-en?docId=ish_12336508-12336555-16&contentType=Process%20Document&selectedLangCode=en"
+      },
+      {
+        id: "R015",
+        docId: "ish_10066267-10065930-16",
+        title: "NL IVR Auto Case Creation",
+        description: "This document describes the CCC agent steps when receiving a call with a case that has been automatically created by the NL IVR.",
+        url: "https://wise.hp.com/wise/DocumentDetail/emea-en?docId=ish_10066267-10065930-16&contentType=Process%20Document&selectedLangCode=en"
+      }
+    ];
+
+    // ==================== UTILITY FUNCTIONS ====================
+    function throttle(func, limit) {
+      let inThrottle;
+      return function(...args) {
+        if (!inThrottle) {
+          func.apply(this, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      };
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    // ==================== DOM ELEMENTS ====================
+    const searchInput = document.getElementById("searchInput");
+    const categoryFiltersEl = document.getElementById("categoryFilters");
+    const parameterListEl = document.getElementById("parameterList");
+    const detailNameEl = document.getElementById("detailName");
+    const detailCategoryEl = document.getElementById("detailCategory");
+    const detailSummaryEl = document.getElementById("detailSummary");
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabMetEl = document.getElementById("tab-met");
+    const tabNotMetEl = document.getElementById("tab-notMet");
+    const tabBlendedEl = document.getElementById("tab-blended");
+    const tabIiChatEl = document.getElementById("tab-iiChat");
+    const tabEmeaEl = document.getElementById("tab-emea");
+    const tabPsgEl = document.getElementById("tab-psg");
+    const tabRsgEl = document.getElementById("tab-rsg");
+    const themeToggle = document.getElementById('themeToggle');
+    const quickActionsToggle = document.getElementById('quickActionsToggle');
+    const quickActionsMenu = document.getElementById('quickActionsMenu');
+    const backToTopBtn = document.getElementById('backToTop');
+    const modalClose = document.getElementById('modalClose');
+    const bookmarksModalClose = document.getElementById('bookmarksModalClose');
+    const clearBookmarksBtn = document.getElementById('clearBookmarksBtn');
+
+    let currentCategoryFilter = "All";
+    let currentSearch = "";
+    let currentSelectedId = null;
+
+    // ==================== BOOKMARKS MANAGEMENT ====================
+    function getBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem('qa-bookmarks') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveBookmarks(bookmarks) {
+      try {
+        localStorage.setItem('qa-bookmarks', JSON.stringify(bookmarks));
+      } catch (e) {
+        showToast('Failed to save bookmarks', 'error', '❌');
+      }
+    }
+
+    function isBookmarked(id) {
+      return getBookmarks().includes(id);
+    }
+
+    function openBookmarksModal() {
+      const modal = document.getElementById('bookmarksModal');
+      if (modal) {
+        renderBookmarksList();
+        modal.classList.add('show');
+      }
+    }
+
+    function closeBookmarksModal() {
+      const modal = document.getElementById('bookmarksModal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+
+    function renderBookmarksList() {
+      const listContainer = document.getElementById('bookmarksList');
+      if (!listContainer) return;
+
+      const bookmarks = getBookmarks();
+
+      if (bookmarks.length === 0) {
+        listContainer.innerHTML = `
+          <div class="bookmarks-empty">
+            <span class="bookmarks-empty-icon">📭</span>
+            <div class="bookmarks-empty-text">No bookmarks yet</div>
+            <div class="bookmarks-empty-hint">Click the ⭐ button to bookmark a parameter</div>
+          </div>
+        `;
+        updateClearButtonState();
+        updateBookmarkBadge();
+        return;
+      }
+
+      listContainer.innerHTML = '';
+
+      bookmarks.forEach(id => {
+        const param = parameters.find(p => p.id === id);
+        if (param) {
+          const item = document.createElement('div');
+          item.className = 'bookmark-item';
+          item.innerHTML = `
+            <div class="bookmark-info">
+              <div class="bookmark-name">${param.name}</div>
+              <div class="bookmark-category">${param.category}</div>
+            </div>
+            <button class="bookmark-remove" title="Remove bookmark" aria-label="Remove ${param.name} from bookmarks">×</button>
+          `;
+
+          item.querySelector('.bookmark-info').addEventListener('click', () => {
+            selectParameter(id);
+            closeBookmarksModal();
+            showToast(`Viewing: ${param.name}`, 'info', '📖');
+          });
+
+          item.querySelector('.bookmark-remove').addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeBookmark(id);
+          });
+
+          listContainer.appendChild(item);
+        }
+      });
+
+      updateClearButtonState();
+      updateBookmarkBadge();
+    }
+
+    function removeBookmark(id) {
+      let bookmarks = getBookmarks();
+      bookmarks = bookmarks.filter(b => b !== id);
+      saveBookmarks(bookmarks);
+      renderBookmarksList();
+      renderParameterList();
+      
+      const param = parameters.find(p => p.id === id);
+      showToast(`Removed: ${param?.name || 'Bookmark'}`, 'info', '🗑️');
+    }
+
+    function clearAllBookmarks() {
+      if (confirm('Are you sure you want to clear all bookmarks?')) {
+        saveBookmarks([]);
+        renderBookmarksList();
+        renderParameterList();
+        showToast('All bookmarks cleared', 'info', '🗑️');
+      }
+    }
+
+    function updateClearButtonState() {
+      if (clearBookmarksBtn) {
+        const bookmarks = getBookmarks();
+        clearBookmarksBtn.disabled = bookmarks.length === 0;
+      }
+    }
+
+    function updateBookmarkBadge() {
+      const viewBookmarksBtn = document.querySelector('.quick-action-btn.view-bookmarks');
+      if (!viewBookmarksBtn) return;
+
+      const existingBadge = viewBookmarksBtn.querySelector('.bookmark-count');
+      if (existingBadge) existingBadge.remove();
+
+      const bookmarks = getBookmarks();
+      if (bookmarks.length > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'bookmark-count';
+        badge.textContent = bookmarks.length > 9 ? '9+' : bookmarks.length;
+        viewBookmarksBtn.appendChild(badge);
+      }
+    }
+
+    function bookmarkCurrent() {
+      if (!currentSelectedId) {
+        showToast('Please select a parameter first', 'warning', '⚠️');
+        return;
+      }
+      
+      let bookmarks = getBookmarks();
+      const param = parameters.find(p => p.id === currentSelectedId);
+      
+      if (bookmarks.includes(currentSelectedId)) {
+        bookmarks = bookmarks.filter(b => b !== currentSelectedId);
+        saveBookmarks(bookmarks);
+        showToast(`Removed: ${param?.name || 'Bookmark'}`, 'info', '📌');
+      } else {
+        bookmarks.push(currentSelectedId);
+        saveBookmarks(bookmarks);
+        showToast(`Bookmarked: ${param?.name || 'Parameter'}`, 'success', '⭐');
+        triggerConfetti();
+      }
+      
+      updateBookmarkBadge();
+      renderParameterList();
+    }
+
+    // ==================== WISE DOCUMENTS FUNCTIONS ====================
+    let wiseDocsSearchQuery = '';
+    let wiseDocsSortColumn = 'id';
+    let wiseDocsSortDirection = 'asc';
+
+    function openWiseDocsModal() {
+      const modal = document.getElementById('wiseDocsModal');
+      if (modal) {
+        wiseDocsSearchQuery = '';
+        const searchInput = document.getElementById('wiseDocsSearch');
+        if (searchInput) searchInput.value = '';
+        renderWiseDocsTable();
+        modal.classList.add('show');
+        searchInput?.focus();
+      }
+    }
+
+    function closeWiseDocsModal() {
+      const modal = document.getElementById('wiseDocsModal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+
+    function filterWiseDocs(docs, query) {
+      if (!query.trim()) return docs;
+      
+      const q = query.toLowerCase();
+      return docs.filter(doc => 
+        doc.id.toLowerCase().includes(q) ||
+        doc.docId.toLowerCase().includes(q) ||
+        doc.title.toLowerCase().includes(q) ||
+        doc.description.toLowerCase().includes(q)
+      );
+    }
+
+    function sortWiseDocs(docs, column, direction) {
+      return [...docs].sort((a, b) => {
+        let valA = a[column] || '';
+        let valB = b[column] || '';
+        
+        if (typeof valA === 'string') valA = valA.toLowerCase();
+        if (typeof valB === 'string') valB = valB.toLowerCase();
+        
+        if (valA < valB) return direction === 'asc' ? -1 : 1;
+        if (valA > valB) return direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    function highlightText(text, query) {
+      if (!query.trim()) return text;
+      
+      const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escapedQuery})`, 'gi');
+      return text.replace(regex, '<span class="highlight">$1</span>');
+    }
+
+    function renderWiseDocsTable() {
+      const tbody = document.getElementById('wiseDocsBody');
+      const statsEl = document.getElementById('wiseDocsStats');
+      const countEl = document.getElementById('wiseDocsCount');
+      
+      if (!tbody) return;
+      
+      let filteredDocs = filterWiseDocs(wiseDocuments, wiseDocsSearchQuery);
+      filteredDocs = sortWiseDocs(filteredDocs, wiseDocsSortColumn, wiseDocsSortDirection);
+      
+      if (wiseDocsSearchQuery.trim()) {
+        statsEl.textContent = `🔍 Found ${filteredDocs.length} of ${wiseDocuments.length} documents matching "${wiseDocsSearchQuery}"`;
+        statsEl.classList.add('visible');
+      } else {
+        statsEl.classList.remove('visible');
+      }
+      
+      countEl.textContent = `📚 Total: ${filteredDocs.length} document${filteredDocs.length !== 1 ? 's' : ''}`;
+      
+      document.querySelectorAll('.wise-docs-table th.sortable').forEach(th => {
+        th.classList.remove('sorted-asc', 'sorted-desc');
+        const icon = th.querySelector('.sort-icon');
+        if (icon) icon.textContent = '↕';
+        
+        if (th.dataset.sort === wiseDocsSortColumn) {
+          th.classList.add(wiseDocsSortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+          if (icon) icon.textContent = wiseDocsSortDirection === 'asc' ? '↑' : '↓';
+        }
+      });
+      
+      if (filteredDocs.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5">
+              <div class="wise-docs-empty">
+                <span class="wise-docs-empty-icon">📭</span>
+                <div class="wise-docs-empty-text">No documents match your search</div>
+                <div class="wise-docs-empty-hint">Try different keywords or clear the search</div>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      tbody.innerHTML = filteredDocs.map(doc => `
+        <tr>
+          <td><span class="wise-doc-id">${highlightText(doc.id, wiseDocsSearchQuery)}</span></td>
+          <td><span class="wise-doc-docid">${highlightText(doc.docId, wiseDocsSearchQuery)}</span></td>
+          <td><span class="wise-doc-title">${highlightText(doc.title, wiseDocsSearchQuery)}</span></td>
+          <td><span class="wise-doc-description">${highlightText(doc.description, wiseDocsSearchQuery)}</span></td>
+          <td>
+            <a href="${doc.url}" target="_blank" rel="noopener noreferrer" class="wise-doc-link" title="Open ${doc.title} in WISE">
+              🔗 Open
+            </a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function exportWiseDocsToCSV() {
+      const filteredDocs = filterWiseDocs(wiseDocuments, wiseDocsSearchQuery);
+      
+      const headers = ['Ref ID', 'Document ID', 'Title', 'Description', 'URL'];
+      
+      const rows = filteredDocs.map(doc => [
+        doc.id,
+        doc.docId,
+        `"${doc.title.replace(/"/g, '""')}"`,
+        `"${doc.description.replace(/"/g, '""')}"`,
+        doc.url
+      ]);
+      
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `WISE_Documents_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showToast(`Exported ${filteredDocs.length} documents to CSV!`, 'success', '📥');
+    }
+
+    // ==================== BUILD CATEGORY FILTERS ====================
+    function buildCategoryFilters() {
+      const categories = [...new Set(parameters.map(p => p.category))].sort();
+      categoryFiltersEl.innerHTML = "";
+
+      const allBtn = document.createElement("button");
+      allBtn.textContent = "All";
+      allBtn.className = "category-button active";
+      allBtn.dataset.category = "All";
+      allBtn.type = "button";
+      categoryFiltersEl.appendChild(allBtn);
+
+      categories.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.textContent = cat;
+        btn.className = "category-button";
+        btn.dataset.category = cat;
+        btn.type = "button";
+        categoryFiltersEl.appendChild(btn);
+      });
+
+      categoryFiltersEl.addEventListener("click", e => {
+        const btn = e.target.closest(".category-button");
+        if (btn) {
+          currentCategoryFilter = btn.dataset.category;
+          [...categoryFiltersEl.children].forEach(b => b.classList.toggle("active", b === btn));
+          renderParameterList();
+        }
+      });
+    }
+
+    // ==================== FILTER LOGIC ====================
+    function matchesFilters(param) {
+      const inCategory = currentCategoryFilter === "All" || param.category === currentCategoryFilter;
+      if (!inCategory) return false;
+      if (!currentSearch.trim()) return true;
+      const q = currentSearch.toLowerCase();
+      const haystack = (param.name + " " + param.summary + " " + param.met + " " + param.notMet + " " + param.blended + " " + param.iiChat + " " + param.emea + " " + param.psg + " " + param.rsg).toLowerCase();
+      return haystack.includes(q);
+    }
+
+    // ==================== RENDER PARAMETER LIST ====================
+    function renderParameterList() {
+      const visible = parameters.filter(matchesFilters);
+      const bookmarks = getBookmarks();
+      parameterListEl.innerHTML = "";
+
+      const searchStats = document.getElementById('searchStats');
+      if (currentSearch.trim()) {
+        searchStats.textContent = `Found ${visible.length} of ${parameters.length} parameters`;
+        searchStats.style.display = 'block';
+      } else {
+        searchStats.style.display = 'none';
+      }
+
+      if (visible.length === 0) {
+        parameterListEl.innerHTML = `
+          <div class="empty-state">
+            <span class="empty-state-icon">🔍</span>
+            <div class="empty-state-text">No parameters match your search/filters.</div>
+            <div class="empty-state-hint">Try different keywords or clear filters</div>
+          </div>`;
+        return;
+      }
+
+      visible.forEach(param => {
+        const li = document.createElement("li");
+        const isActive = param.id === currentSelectedId;
+        const isBookmarkedParam = bookmarks.includes(param.id);
+        
+        li.className = "parameter-item" + 
+          (isActive ? " active" : "") + 
+          (isBookmarkedParam ? " bookmarked" : "");
+        li.dataset.id = param.id;
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', isActive);
+        li.setAttribute('tabindex', '0');
+        li.innerHTML = `<div class="parameter-name">${param.name}</div><div class="parameter-category">${param.category}</div>`;
+        parameterListEl.appendChild(li);
+      });
+
+      if (!currentSelectedId && visible.length > 0) selectParameter(visible[0].id);
+    }
+
+    // ==================== SELECT PARAMETER ====================
+    function selectParameter(id) {
+      const param = parameters.find(p => p.id === id);
+      if (!param) return;
+
+      currentSelectedId = id;
+      
+      [...parameterListEl.querySelectorAll(".parameter-item")].forEach(li => {
+        const isActive = li.dataset.id === id;
+        li.classList.toggle("active", isActive);
+        li.setAttribute('aria-selected', isActive);
+      });
+
+      detailNameEl.textContent = param.name;
+      detailCategoryEl.textContent = param.category;
+      detailSummaryEl.textContent = param.summary || "";
+
+      // Update all 7 tab contents
+      tabMetEl.innerHTML = param.met || "<p class='muted'>No MET notes.</p>";
+      tabNotMetEl.innerHTML = param.notMet || "<p class='muted'>No NOT MET notes.</p>";
+      tabBlendedEl.innerHTML = param.blended || "<p class='muted'>No BLENDED notes.</p>";
+      tabIiChatEl.innerHTML = param.iiChat || "<p class='muted'>No II CHAT notes.</p>";
+      tabEmeaEl.innerHTML = param.emea || "<p class='muted'>No EMEA notes.</p>";
+      tabPsgEl.innerHTML = param.psg || "<p class='muted'>No PSG notes.</p>";
+      tabRsgEl.innerHTML = param.rsg || "<p class='muted'>No RSG notes.</p>";
+
+      // Reset to Met tab
+      tabButtons.forEach(btn => {
+        const isActive = btn.dataset.tab === "met";
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute('aria-selected', isActive);
+      });
+      
+      // Show only Met tab, hide others
+      const allTabs = [tabMetEl, tabNotMetEl, tabBlendedEl, tabIiChatEl, tabEmeaEl, tabPsgEl, tabRsgEl];
+      allTabs.forEach(tab => {
+        if (tab === tabMetEl) {
+          tab.classList.add("active");
+          tab.removeAttribute('hidden');
+        } else {
+          tab.classList.remove("active");
+          tab.setAttribute('hidden', '');
+        }
+      });
+
+      addToRecentlyViewed(id);
+    }
+
+    // ==================== EVENT LISTENERS ====================
+    parameterListEl.addEventListener("click", e => {
+      const item = e.target.closest(".parameter-item");
+      if (item) selectParameter(item.dataset.id);
+    });
+
+    parameterListEl.addEventListener("keydown", e => {
+      const item = e.target.closest(".parameter-item");
+      if (item && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        selectParameter(item.dataset.id);
+      }
+    });
+
+    searchInput.addEventListener("input", debounce(e => {
+      currentSearch = e.target.value;
+      renderParameterList();
+    }, 200));
+
+    // ==================== TAB BUTTON CLICK HANDLER ====================
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.tab;
+        
+        // Update button states
+        tabButtons.forEach(b => {
+          const isActive = b.dataset.tab === target;
+          b.classList.toggle("active", isActive);
+          b.setAttribute('aria-selected', isActive);
+        });
+        
+        // Update tab content visibility
+        const allTabs = [tabMetEl, tabNotMetEl, tabBlendedEl, tabIiChatEl, tabEmeaEl, tabPsgEl, tabRsgEl];
+        const tabMap = {
+          'met': tabMetEl,
+          'notMet': tabNotMetEl,
+          'blended': tabBlendedEl,
+          'iiChat': tabIiChatEl,
+          'emea': tabEmeaEl,
+          'psg': tabPsgEl,
+          'rsg': tabRsgEl
+        };
+        
+        allTabs.forEach(tab => {
+          const isTarget = tab === tabMap[target];
+          tab.classList.toggle("active", isTarget);
+          tab.toggleAttribute('hidden', !isTarget);
+        });
+      });
+    });
+ // ==================== QUICK ACTIONS ====================
+    if (quickActionsToggle && quickActionsMenu) {
+      quickActionsToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = quickActionsToggle.classList.toggle('active');
+        quickActionsMenu.classList.toggle('show');
+        quickActionsToggle.setAttribute('aria-expanded', isExpanded);
+      });
+
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.quick-actions')) {
+          quickActionsToggle.classList.remove('active');
+          quickActionsMenu.classList.remove('show');
+          quickActionsToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      const printBtn = quickActionsMenu.querySelector('.print');
+      const copyBtn = quickActionsMenu.querySelector('.copy');
+      const bookmarkBtn = quickActionsMenu.querySelector('.bookmark');
+      const viewBookmarksBtn = quickActionsMenu.querySelector('.view-bookmarks');
+      const shareBtn = quickActionsMenu.querySelector('.share');
+      const fullscreenBtn = quickActionsMenu.querySelector('.fullscreen');
+
+      if (printBtn) printBtn.addEventListener('click', () => window.print());
+      if (copyBtn) copyBtn.addEventListener('click', copyAllContent);
+      if (bookmarkBtn) bookmarkBtn.addEventListener('click', bookmarkCurrent);
+      if (viewBookmarksBtn) viewBookmarksBtn.addEventListener('click', openBookmarksModal);
+      if (shareBtn) shareBtn.addEventListener('click', shareContent);
+      if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
+    }
+
+    // ==================== SCROLL PROGRESS ====================
+    window.addEventListener('scroll', throttle(() => {
+      const scrollProgress = document.getElementById('scrollProgress');
+      if (scrollProgress) {
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
+        scrollProgress.style.width = Math.min(pct, 100) + '%';
+      }
+
+      if (backToTopBtn) {
+        backToTopBtn.classList.toggle('visible', window.scrollY > 300);
+      }
+    }, 16));
+
+    // ==================== DARK MODE ====================
+    if (themeToggle) {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggle.textContent = '☀️';
+        themeToggle.setAttribute('aria-pressed', 'true');
+      }
+
+      themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeToggle.textContent = isDark ? '☀️' : '🌙';
+        themeToggle.setAttribute('aria-pressed', isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        showToast(isDark ? 'Dark mode enabled' : 'Light mode enabled', 'info', '🎨');
+      });
+    }
+
+    // ==================== TOAST NOTIFICATIONS ====================
+    function showToast(message, type = 'info', icon = 'ℹ️', title = '') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span class="toast-icon">${icon}</span>
+        <div class="toast-content">
+          ${title ? `<div class="toast-title">${title}</div>` : ''}
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" aria-label="Close notification">×</button>
+      `;
+
+      toast.querySelector('.toast-close').addEventListener('click', () => {
+        toast.classList.add('hiding');
+        setTimeout(() => toast.remove(), 300);
+      });
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.classList.add('hiding');
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 4000);
+    }
+
+    // ==================== COPY CONTENT ====================
+    function copyAllContent() {
+      const activeTab = document.querySelector('.tab-content.active');
+      const text = `${detailNameEl.textContent}\n\n${detailSummaryEl.textContent}\n\n${activeTab?.innerText || ''}`;
+      
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          showToast('Content copied to clipboard!', 'success', '✅');
+          triggerConfetti();
+        })
+        .catch(() => {
+          showToast('Failed to copy content', 'error', '❌');
+        });
+    }
+
+    // ==================== SHARE CONTENT ====================
+    function shareContent() {
+      const url = window.location.href;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: detailNameEl.textContent,
+          text: detailSummaryEl.textContent,
+          url: url
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(url)
+          .then(() => showToast('Link copied to clipboard!', 'info', '📋'))
+          .catch(() => showToast('Failed to copy link', 'error', '❌'));
+      }
+    }
+
+    // ==================== FULLSCREEN ====================
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen()
+          .then(() => showToast('Entered fullscreen', 'info', '⛶'))
+          .catch(() => showToast('Fullscreen not available', 'error', '❌'));
+      } else {
+        document.exitFullscreen()
+          .then(() => showToast('Exited fullscreen', 'info', '⛶'));
+      }
+    }
+
+    // ==================== CONFETTI ====================
+    function triggerConfetti() {
+      const container = document.getElementById('confettiContainer');
+      if (!container) return;
+
+      const colors = ['#0096d6', '#00b5e2', '#d6006e', '#ffd100', '#10b981'];
+      
+      for (let i = 0; i < 30; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        container.appendChild(piece);
+        
+        setTimeout(() => piece.remove(), 4000);
+      }
+    }
+
+    // ==================== PARTICLES ====================
+    function createParticles() {
+      const container = document.getElementById('particles');
+      if (!container) return;
+
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDelay = Math.random() * 15 + 's';
+        p.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        container.appendChild(p);
+      }
+    }
+
+    // ==================== MODALS ====================
+    function openModal() {
+      const modal = document.getElementById('shortcutsModal');
+      if (modal) {
+        modal.classList.add('show');
+        modal.querySelector('.modal-close')?.focus();
+      }
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('shortcutsModal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+
+    if (modalClose) {
+      modalClose.addEventListener('click', closeModal);
+    }
+
+    if (bookmarksModalClose) {
+      bookmarksModalClose.addEventListener('click', closeBookmarksModal);
+    }
+
+    if (clearBookmarksBtn) {
+      clearBookmarksBtn.addEventListener('click', clearAllBookmarks);
+    }
+
+    document.getElementById('shortcutsModal')?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        closeModal();
+      }
+    });
+
+    document.getElementById('bookmarksModal')?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        closeBookmarksModal();
+      }
+    });
+
+    document.getElementById('wiseDocsModal')?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        closeWiseDocsModal();
+      }
+    });
+
+    // ==================== WISE DOCUMENTS EVENT LISTENERS ====================
+    const openWiseDocsBtn = document.getElementById('openWiseDocsBtn');
+    if (openWiseDocsBtn) {
+      openWiseDocsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openWiseDocsModal();
+      });
+    }
+
+    const wiseDocsModalCloseBtn = document.getElementById('wiseDocsModalClose');
+    if (wiseDocsModalCloseBtn) {
+      wiseDocsModalCloseBtn.addEventListener('click', closeWiseDocsModal);
+    }
+
+    const wiseDocsSearchInput = document.getElementById('wiseDocsSearch');
+    if (wiseDocsSearchInput) {
+      wiseDocsSearchInput.addEventListener('input', debounce((e) => {
+        wiseDocsSearchQuery = e.target.value;
+        renderWiseDocsTable();
+      }, 250));
+    }
+
+    document.querySelectorAll('.wise-docs-table th.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const column = th.dataset.sort;
+        if (wiseDocsSortColumn === column) {
+          wiseDocsSortDirection = wiseDocsSortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+          wiseDocsSortColumn = column;
+          wiseDocsSortDirection = 'asc';
+        }
+        renderWiseDocsTable();
+      });
+    });
+
+    const exportWiseDocsBtnEl = document.getElementById('exportWiseDocsBtn');
+    if (exportWiseDocsBtnEl) {
+      exportWiseDocsBtnEl.addEventListener('click', exportWiseDocsToCSV);
+    }
+
+    // ==================== KEYBOARD SHORTCUTS ====================
+    document.addEventListener('keydown', e => {
+      if (e.target === searchInput || e.target === wiseDocsSearchInput) {
+        if (e.key === 'Escape') {
+          e.target.blur();
+          if (e.target === searchInput) {
+            searchInput.value = '';
+            currentSearch = '';
+            renderParameterList();
+          }
+        }
+        return;
+      }
+
+      if (e.key === '?') {
+        e.preventDefault();
+        openModal();
+      }
+
+      if (e.key === 'Escape') {
+        closeModal();
+        closeBookmarksModal();
+        closeWiseDocsModal();
+      }
+
+      if ((e.key === 'd' || e.key === 'D') && !e.ctrlKey && !e.metaKey) {
+        themeToggle?.click();
+      }
+
+      if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey && !e.metaKey) {
+        openBookmarksModal();
+      }
+
+      if ((e.key === 'w' || e.key === 'W') && !e.ctrlKey && !e.metaKey) {
+        openWiseDocsModal();
+      }
+
+      // Tab shortcuts 1-7
+      if (e.key === '1') document.querySelector('.tab-button.met')?.click();
+      if (e.key === '2') document.querySelector('.tab-button.notmet')?.click();
+      if (e.key === '3') document.querySelector('.tab-button.blended')?.click();
+      if (e.key === '4') document.querySelector('.tab-button.iichat')?.click();
+      if (e.key === '5') document.querySelector('.tab-button.emea')?.click();
+      if (e.key === '6') document.querySelector('.tab-button.psg')?.click();
+      if (e.key === '7') document.querySelector('.tab-button.rsg')?.click();
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+
+      const items = [...parameterListEl.querySelectorAll('.parameter-item')];
+      const idx = items.findIndex(i => i.dataset.id === currentSelectedId);
+
+      if (e.key === 'ArrowDown' && idx < items.length - 1) {
+        e.preventDefault();
+        selectParameter(items[idx + 1].dataset.id);
+        items[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      if (e.key === 'ArrowUp' && idx > 0) {
+        e.preventDefault();
+        selectParameter(items[idx - 1].dataset.id);
+        items[idx - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+
+    // ==================== BACK TO TOP ====================
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // ==================== FOOTER QUICK LINKS ====================
+    document.querySelectorAll('.footer-links a[data-category]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const category = link.dataset.category;
+        
+        currentCategoryFilter = category;
+        
+        [...categoryFiltersEl.children].forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.category === category);
+        });
+        
+        renderParameterList();
+        
+        document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' });
+        
+        showToast(`Filtered by: ${category}`, 'info', '📂');
+      });
+    });
+
+    // ==================== RECENTLY VIEWED ====================
+    let recentlyViewed = [];
+    
+    try {
+      recentlyViewed = JSON.parse(localStorage.getItem('qa-recently') || '[]');
+    } catch (e) {
+      recentlyViewed = [];
+    }
+
+    function addToRecentlyViewed(id) {
+      recentlyViewed = [id, ...recentlyViewed.filter(i => i !== id)].slice(0, 5);
+      
+      try {
+        localStorage.setItem('qa-recently', JSON.stringify(recentlyViewed));
+      } catch (e) {}
+      
+      renderRecentlyViewed();
+    }
+
+    function renderRecentlyViewed() {
+      const containerParent = document.getElementById('recentlyViewedContainer');
+      if (!containerParent) return;
+
+      if (recentlyViewed.length === 0) {
+        containerParent.innerHTML = '';
+        return;
+      }
+
+      containerParent.innerHTML = `
+        <div class="recently-viewed">
+          <h4>🕐 Recently Viewed</h4>
+          <div class="recently-viewed-list"></div>
+        </div>
+      `;
+
+      const list = containerParent.querySelector('.recently-viewed-list');
+      
+      recentlyViewed.forEach(id => {
+        const param = parameters.find(p => p.id === id);
+        if (param) {
+          const item = document.createElement('span');
+          item.className = 'recently-viewed-item';
+          item.textContent = param.name;
+          item.setAttribute('tabindex', '0');
+          item.setAttribute('role', 'button');
+          
+          item.addEventListener('click', () => selectParameter(id));
+          item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectParameter(id);
+            }
+          });
+          
+          list.appendChild(item);
+        }
+      });
+    }
+
+    // ==================== INITIALIZE ====================
+    function init() {
+      createParticles();
+      buildCategoryFilters();
+      renderParameterList();
+      renderRecentlyViewed();
+      updateBookmarkBadge();
+
+      setTimeout(() => {
+        showToast('Press ? for keyboard shortcuts', 'info', '⌨️', 'Welcome!');
+      }, 1500);
+
+      console.log('🎯 QA Compendium loaded!');
+      console.log(`📋 Parameters: ${parameters.length}`);
+      console.log(`📄 WISE Documents: ${wiseDocuments.length}`);
+    }
+
+    init();
+  </script>
+</body>
+</html>
